@@ -1,7 +1,7 @@
 # This is for HW3 of network measurement lab in POLIMI
 1. All the .csv files are in dataset fold.
 2. Firstly, we run the [Lecture.py](Lecture.py) to determine N. I save
-a figure as in [Lecture_dataset_Performance.png]().
+a figure as in [Lecture_dataset_Performance.png](result_figure/Lecture_dataset_Performance.png).
 The optimal N is 7.
 ![Lecture_dataset_Performance.png](result_figure%2FLecture_dataset_Performance.png)
 3. Run [Challenge.py](Challenge.py) to finish the task 2. The result is:\
