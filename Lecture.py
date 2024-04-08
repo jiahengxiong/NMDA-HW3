@@ -9,6 +9,7 @@ from sklearn.metrics import homogeneity_completeness_v_measure
 
 
 def read_csv(base_dir):
+    """Reads CSV files from a directory and concatenates them into a single DataFrame."""
     df_list = list()
 
     for root, dirs, files in os.walk(base_dir):
@@ -23,6 +24,7 @@ def read_csv(base_dir):
 
 
 def remove_NaN(df):
+    """Removes columns from DataFrame that have more than 60% NaN values."""
     nan_sum = df.isna().sum()
 
     nan_percentage = (nan_sum / len(df)) * 100
@@ -42,6 +44,7 @@ def remove_NaN(df):
 
 
 def find_features_less_20(df):
+    """Identifies features with less than 20 unique values."""
     unique_elem = df.nunique()
 
     print(unique_elem)
@@ -57,6 +60,7 @@ def find_features_less_20(df):
 
 
 def encoder(df, features):
+    """Encodes categorical features using LabelEncoder."""
     df_tmp = df.copy()
     for elem in features:
         if elem != 'Lenght' and elem != 'Channel' and elem != 'DS Channel':
@@ -68,6 +72,7 @@ def encoder(df, features):
 
 
 def plot_heatmap(df, column1, column2, colormap="Blues"):
+    """Plots a heatmap for two columns of a DataFrame."""
     crosstab = pd.crosstab(df[column1], df[column2])
 
     sns.set_theme(style="whitegrid", font_scale=1)
@@ -80,6 +85,16 @@ def plot_heatmap(df, column1, column2, colormap="Blues"):
     plt.ylabel(column1)
 
     plt.show()
+
+
+def num_same_feature(row_1, row_2):
+    """Calculates the number of common elements between two rows."""
+    num = 0
+    for col_name, val_1 in row_1.items():
+        val_2 = row_2[col_name]
+        if val_1 == val_2:
+            num += 1
+    return num
 
 
 if __name__ == "__main__":
@@ -98,32 +113,74 @@ if __name__ == "__main__":
     label_count = burst_df["Label"].value_counts()
     print(label_count)
 
-    plot_heatmap(encoded_df, 'Label', "Supported Rates")
-    plot_heatmap(encoded_df, 'Label', "Extended Supported Rates")
-    plot_heatmap(encoded_df, 'Label', "Vendor Specific Tags")
-    plot_heatmap(encoded_df, 'Label', "HT Capabilities")
-    plot_heatmap(encoded_df, 'Label', "Extended Capabilities")
-
     columns_to_keep = features
     features.insert(0, "MAC Address")
     features.append("Label")
 
     cluster_df = burst_df[features].copy().reset_index()
     print(f"features:{features}")
+    result = {"H": [], "C": [], "V": [], "ERROR": []}
+    for N in range(1, 11):
+        Cluster_ID = 1
+        for index, row in cluster_df.iterrows():
+            flag = False
+            temp = 0
+            for i, row_i in cluster_df.iterrows():
+                same_features = 0
+                if i < index:
+                    same_features = num_same_feature(row_1=row, row_2=row_i)
+                    if same_features >= N:
+                        flag = True
+                        if same_features > temp:
+                            cluster_df.loc[index, "Cluster ID"] = cluster_df.loc[i, "Cluster ID"]
+                            temp = same_features
+            if flag is False:
+                cluster_df.loc[index, "Cluster ID"] = Cluster_ID
+                Cluster_ID += 1
 
-    selected_features = ["HT Capabilities", "Extended Capabilities"]
-    cluster_df["Cluster ID"] = cluster_df.groupby(selected_features).ngroup()
+        display(cluster_df)
 
-    display(cluster_df)
+        plot_heatmap(cluster_df, 'Label', "Cluster ID")
 
-    plot_heatmap(cluster_df, 'Label', "Cluster ID")
+        n_unique_clusterid = len(np.unique(cluster_df["Cluster ID"]))
+        n_unique_label = len(np.unique(cluster_df["Label"]))
+        print(f"*****************{N}******************")
+        print("Error", n_unique_clusterid - n_unique_label)
 
-    n_unique_clusterid = len(np.unique(cluster_df["Cluster ID"]))
-    n_unique_label = len(np.unique(cluster_df["Label"]))
-    print("Error", n_unique_clusterid - n_unique_label)
+        # cluster_df.fillna(0, inplace=True)
 
-    h, c, v = homogeneity_completeness_v_measure(cluster_df["Label"], cluster_df["Cluster ID"])
+        h, c, v = homogeneity_completeness_v_measure(cluster_df["Label"], cluster_df["Cluster ID"])
 
-    print("Homog: ", h)
-    print("Completeness: ", c)
-    print("V-Meas: ", v)
+        print("Homog: ", h)
+        print("Completeness: ", c)
+        print("V-Meas: ", v)
+        result['H'].append(h)
+        result['C'].append(c)
+        result['V'].append(v)
+        result['ERROR'].append(n_unique_clusterid - n_unique_label)
+
+    print(result)
+    H = result['H']
+    C = result['C']
+    V = result['V']
+    ERROR = result['ERROR']
+
+    fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+
+    axes[0].plot(range(1, 11), H, label='Homogeneity', marker='o')
+    axes[0].plot(range(1, 11), C, label='Completeness', marker='o')
+    axes[0].plot(range(1, 11), V, label='V-Measure', marker='o')
+    axes[0].set_title('Performance Metrics vs N')
+    axes[0].set_xlabel('N')
+    axes[0].set_ylabel('Score')
+    axes[0].legend()
+
+    axes[1].plot(range(1, 11), ERROR, label='Error', marker='o', color='red')
+    axes[1].set_title('Error vs N')
+    axes[1].set_xlabel('N')
+    axes[1].set_ylabel('Error')
+    axes[1].legend()
+
+    plt.tight_layout()
+    plt.savefig("result_figure\\Lecture_dataset_Performance.png")
+    plt.show()
