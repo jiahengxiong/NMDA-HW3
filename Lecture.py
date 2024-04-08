@@ -99,7 +99,6 @@ def num_same_feature(row_1, row_2):
 
 if __name__ == "__main__":
     base_lecture_dir = "dataset\\MAC_derand_lecture-dataset"
-    base_challenge_dir = "dataset\\MAC_derand_challenge"
     combine_df = read_csv(base_dir=base_lecture_dir)
     display(combine_df)
     clean_df = remove_NaN(df=combine_df)
