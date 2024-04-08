@@ -11,7 +11,7 @@ def select_files(K, file_list):
     dataset_list = []
     num_dataset = 0
     while num_dataset < 5:
-        selected_files = random.sample(files, K)
+        selected_files = random.sample(file_list, K)
         if selected_files not in dataset_list:
             dataset_list.append(selected_files)
             num_dataset += 1
@@ -89,6 +89,7 @@ if __name__ == '__main__':
             result[k]["V"].append(v)
             result[k]["ERROR"].append(Error)
 
+    print(result)
     for k in range(3, 6):
         print(
             f"K={k}, Average H={sum(result[k]['H']) / len(result[k]['H'])}, Average C={sum(result[k]['C']) / len(result[k]['C'])}, Average V={sum(result[k]['V']) / len(result[k]['V'])}, Average Error={sum(result[k]['ERROR']) / len(result[k]['ERROR'])}")
