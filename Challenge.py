@@ -1,11 +1,9 @@
 import os
 import random
-
 import numpy as np
 import pandas as pd
 from IPython.display import display
 from sklearn.metrics import homogeneity_completeness_v_measure
-
 import Lecture
 
 
@@ -41,7 +39,7 @@ if __name__ == '__main__':
     result = {}
     for k in range(3, 6):
         dataset_list = select_files(K=k, file_list=files)
-        result = {k: {"H": [], "C": [], "V": [], "ERROR": []}}
+        result[k] = {"H": [], "C": [], "V": [], "ERROR": []}
         for dataset in dataset_list:
             combine_df = read_csv(base_dir=base_challenge_dir, file_list=dataset)
             display(combine_df)
@@ -92,4 +90,5 @@ if __name__ == '__main__':
             result[k]["ERROR"].append(Error)
 
     for k in range(3, 6):
-        print(f"K={k}, Average H={sum(result[k]['H']) / len(result[k]['H'])}, Average C={sum(result[k]['C']) / len(result[k]['C'])}, Average V={sum(result[k]['V']) / len(result[k]['V'])}, Average Error={sum(result[k]['ERROR']) / len(result[k]['ERROR'])}")
+        print(
+            f"K={k}, Average H={sum(result[k]['H']) / len(result[k]['H'])}, Average C={sum(result[k]['C']) / len(result[k]['C'])}, Average V={sum(result[k]['V']) / len(result[k]['V'])}, Average Error={sum(result[k]['ERROR']) / len(result[k]['ERROR'])}")
