@@ -8,6 +8,7 @@ import Lecture
 
 
 def select_files(K, file_list):
+    """Randomly selects K unique files from the given list of files."""
     dataset_list = []
     num_dataset = 0
     while num_dataset < 5:
@@ -19,7 +20,7 @@ def select_files(K, file_list):
 
 
 def read_csv(base_dir, file_list):
-    """Reads CSV files from a directory and concatenates them into a single DataFrame."""
+    """Reads CSV files specified in the file list from the given directory and concatenates them into a single DataFrame."""
     df_list = list()
     print(f"Processing file: {file_list}")
     for file in file_list:
@@ -35,12 +36,13 @@ def read_csv(base_dir, file_list):
 if __name__ == '__main__':
     base_challenge_dir = "dataset\\MAC_derand_challenge-dataset\\challenge-dataset\\"
     files = os.listdir(base_challenge_dir)
-    N = 7
-    result = {}
-    for k in range(3, 6):
-        dataset_list = select_files(K=k, file_list=files)
-        result[k] = {"H": [], "C": [], "V": [], "ERROR": []}
-        for dataset in dataset_list:
+    N = 7  # Set the threshold value N
+    result = {}  # Dictionary to store the results
+    for k in range(3, 6):  # Iterate over different values of k
+        dataset_list = select_files(K=k, file_list=files)  # Randomly select files for each dataset
+        result[k] = {"H": [], "C": [], "V": [], "ERROR": []}  # Initialize the result dictionary for current k
+        for dataset in dataset_list:  # Iterate over each dataset
+            # Read and preprocess the dataset
             combine_df = read_csv(base_dir=base_challenge_dir, file_list=dataset)
             display(combine_df)
             clean_df = Lecture.remove_NaN(df=combine_df)
@@ -61,6 +63,7 @@ if __name__ == '__main__':
             cluster_df = burst_df[features].copy().reset_index()
             print(f"features:{features}")
             Cluster_ID = 1
+            # Apply clustering algorithm to assign Cluster IDs
             for index, row in cluster_df.iterrows():
                 flag = False
                 temp = 0
@@ -77,18 +80,23 @@ if __name__ == '__main__':
                     cluster_df.loc[index, "Cluster ID"] = Cluster_ID
                     Cluster_ID += 1
             display(cluster_df)
+            # Visualize clustering results
             Lecture.plot_heatmap(cluster_df, 'Label', "Cluster ID")
+            # Compute and print error
             n_unique_clusterid = len(np.unique(cluster_df["Cluster ID"]))
             n_unique_label = len(np.unique(cluster_df["Label"]))
             Error = n_unique_clusterid - n_unique_label
             print("Error", Error)
+            # Compute homogeneity, completeness, and V-measure
             h, c, v = homogeneity_completeness_v_measure(cluster_df["Label"], cluster_df["Cluster ID"])
 
+            # Store the results
             result[k]["H"].append(h)
             result[k]["C"].append(c)
             result[k]["V"].append(v)
             result[k]["ERROR"].append(Error)
 
+    # Print the results
     print(result)
     for k in range(3, 6):
         print(
