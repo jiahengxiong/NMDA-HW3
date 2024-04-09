@@ -24,6 +24,8 @@ This README provides instructions and results for HW3 of the Network Measurement
 - K=6, Average H=1.0, Average C=0.9443515050002154, Average V=0.9713794060093172, Average Error=1.0
 4. The script generates a performance plot with different K saved as [Challenge_dataset_Performance.png](result_figure/Challenge_dataset_Performance.png)
 
+## Task 3: Analyzing Unlabeled  Dataset
+1. Execute the [Unlable.py](Unlable.py) script to estimate the number of different devices. **The Number od Devices is 93**.
 
 ## Conclusion
 This assignment demonstrates the use of Python scripts to analyze network measurement data, determine optimal parameters, and evaluate clustering performance.
