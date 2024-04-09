@@ -1,9 +1,12 @@
 import os
 import random
+
 import numpy as np
 import pandas as pd
 from IPython.display import display
+from matplotlib import pyplot as plt
 from sklearn.metrics import homogeneity_completeness_v_measure
+
 import Lecture
 
 
@@ -16,11 +19,14 @@ def select_files(K, file_list):
         if selected_files not in dataset_list:
             dataset_list.append(selected_files)
             num_dataset += 1
+        if K == 6:
+            break
     return dataset_list
 
 
 def read_csv(base_dir, file_list):
-    """Reads CSV files specified in the file list from the given directory and concatenates them into a single DataFrame."""
+    """Reads CSV files specified in the file list from the given directory and concatenates them into a single
+    DataFrame."""
     df_list = list()
     print(f"Processing file: {file_list}")
     for file in file_list:
@@ -36,9 +42,9 @@ def read_csv(base_dir, file_list):
 if __name__ == '__main__':
     base_challenge_dir = "dataset\\MAC_derand_challenge-dataset\\challenge-dataset\\"
     files = os.listdir(base_challenge_dir)
-    N = 7  # Set the threshold value N
+    N = 7  # Set the threshold value N determined in previous code
     result = {}  # Dictionary to store the results
-    for k in range(3, 6):  # Iterate over different values of k
+    for k in range(2, 7):  # Iterate over different values of k
         dataset_list = select_files(K=k, file_list=files)  # Randomly select files for each dataset
         result[k] = {"H": [], "C": [], "V": [], "ERROR": []}  # Initialize the result dictionary for current k
         for dataset in dataset_list:  # Iterate over each dataset
@@ -94,10 +100,39 @@ if __name__ == '__main__':
             result[k]["H"].append(h)
             result[k]["C"].append(c)
             result[k]["V"].append(v)
-            result[k]["ERROR"].append(Error)
+            result[k]["ERROR"].append(abs(Error))
 
     # Print the results
     print(result)
+    avg_H = []
+    avg_C = []
+    avg_V = []
+    avg_Error = []
     for k in range(3, 6):
+        avg_H.append(sum(result[k]['H']) / len(result[k]['H']))
+        avg_C.append(sum(result[k]['C']) / len(result[k]['C']))
+        avg_V.append(sum(result[k]['V']) / len(result[k]['V']))
+        avg_Error.append(sum(result[k]['ERROR']) / len(result[k]['ERROR']))
         print(
             f"K={k}, Average H={sum(result[k]['H']) / len(result[k]['H'])}, Average C={sum(result[k]['C']) / len(result[k]['C'])}, Average V={sum(result[k]['V']) / len(result[k]['V'])}, Average Error={sum(result[k]['ERROR']) / len(result[k]['ERROR'])}")
+
+    # plot
+    fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+
+    axes[0].plot(range(2, 7), avg_H, label='Average Homogeneity', marker='o')
+    axes[0].plot(range(2, 7), avg_C, label='Average Completeness', marker='o')
+    axes[0].plot(range(2, 7), avg_V, label='Average V-Measure', marker='o')
+    axes[0].set_title('Performance Metrics vs K')
+    axes[0].set_xlabel('K')
+    axes[0].set_ylabel('Score')
+    axes[0].legend()
+
+    axes[1].plot(range(2, 7), avg_Error, label='Average Error', marker='o', color='red')
+    axes[1].set_title('Error vs K')
+    axes[1].set_xlabel('K')
+    axes[1].set_ylabel('Error')
+    axes[1].legend()
+
+    plt.tight_layout()
+    plt.savefig("result_figure\\Challenge_dataset_Performance.png")
+    plt.show()
