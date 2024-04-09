@@ -11,9 +11,6 @@ This README provides instructions and results for HW3 of the Network Measurement
 2. The script utilizes data from the "lecture-dataset" directory.
 3. Upon running, the script generates a performance plot saved as [Lecture_dataset_Performance.png](result_figure/Lecture_dataset_Performance.png).
 4. The optimal value of N is determined to be 7.
-###### Lecture dataset Performance VS N:
-![Lecture_dataset_Performance.png](result_figure%2FLecture_dataset_Performance.png)
-
 
 ## Task 2: Analyzing Challenge Dataset
 1. Execute the [Challenge.py](Challenge.py) script to perform the analysis on the challenge dataset.
