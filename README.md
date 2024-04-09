@@ -28,11 +28,11 @@ This README provides instructions and results for HW3 of the Network Measurement
 2. The script utilizes data from the "challenge-dataset" directory.
 3. The results of the analysis for different values of K are as follows:
 
-   - K=2, Average H=1.0, Average C=0.750, Average V=0.814, Average Error=0.8
-   - K=3, Average H=1.0, Average C=0.739, Average V=0.844, Average Error=0.8
-   - K=4, Average H=1.0, Average C=0.924, Average V=0.958, Average Error=0.6
-   - K=5, Average H=1.0, Average C=0.919, Average V=0.957, Average Error=1.0
-   - K=6, Average H=1.0, Average C=0.944, Average V=0.971, Average Error=1.0
+* K=2, Average H=1.0, Average C=0.7045206158343548, Average V=0.7913669176947777, Average Error=1.0
+* K=3, Average H=1.0, Average C=0.9092046198599684, Average V=0.9487343058921548, Average Error=0.4
+* K=4, Average H=1.0, Average C=0.9324160068172935, Average V=0.9638204441429764, Average Error=0.6
+* K=5, Average H=1.0, Average C=0.9312667246673367, Average V=0.9638058458642824, Average Error=0.8
+* K=6, Average H=1.0, Average C=0.9443515050002154, Average V=0.9713794060093172, Average Error=1.0
 4. The script generates a performance plot with different K saved as [Challenge_dataset_Performance.png](result_figure/Challenge_dataset_Performance.png)
 
 ## Task 3: Analyzing Unlabeled Dataset

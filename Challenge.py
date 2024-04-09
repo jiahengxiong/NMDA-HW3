@@ -76,8 +76,6 @@ if __name__ == '__main__':
             burst_df = encoded_df.drop(['Timestamp'], axis=1)
             burst_df = burst_df.groupby(['MAC Address'])
             burst_df = burst_df.first().reset_index()
-
-            burst_df = burst_df.first().reset_index()
             display(burst_df)
             label_count = burst_df["Label"].value_counts()
             print(f"Label count:\n {label_count}")
