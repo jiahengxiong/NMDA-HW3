@@ -247,8 +247,8 @@ plots as images.
 In the result figure of this script, we can see when N is 7, the performance is best.
 """
 
-"""
-The results of Task 1 indicate the performance of the clustering approach with different threshold values (N) for feature similarity. Here's the analysis:
+"""The results of Task 1 indicate the performance of the clustering approach with different threshold values (N) for 
+feature similarity. Here's the analysis:
 
 1. Homogeneity (H): The homogeneity score measures the extent to which each cluster contains only data points 
 from a single class. For N=1 and N=2, the homogeneity scores are 0.0, indicating poor clustering, as no clusters are 

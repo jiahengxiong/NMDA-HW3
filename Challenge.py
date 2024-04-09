@@ -77,8 +77,42 @@ if __name__ == '__main__':
             burst_df = burst_df.groupby(['MAC Address'])
             burst_df = burst_df.first().reset_index()
 
+            burst_df = burst_df.first().reset_index()
+            display(burst_df)
+            label_count = burst_df["Label"].value_counts()
+            print(f"Label count:\n {label_count}")
+
+            columns_to_keep = features
+            features.insert(0, "MAC Address")
+            features.append("Label")
+
+            cluster_df = burst_df[features].copy().reset_index()
+            print(f"features:{features}")
+            Cluster_ID = 1
             # Apply clustering algorithm to assign Cluster IDs
-            cluster_df = Lecture.cluster_probe_requests(burst_df, N)
+            for index, row in cluster_df.iterrows():
+                flag = False
+                temp = 0
+                for i, row_i in cluster_df.iterrows():
+                    same_features = 0
+                    if i < index:
+                        same_features = Lecture.num_same_feature(row_1=row, row_2=row_i)
+                        if same_features >= N:
+                            flag = True
+                            if same_features > temp:
+                                cluster_df.loc[index, "Cluster ID"] = cluster_df.loc[i, "Cluster ID"]
+                                temp = same_features
+                if flag is False:
+                    cluster_df.loc[index, "Cluster ID"] = Cluster_ID
+                    Cluster_ID += 1
+            display(cluster_df)
+            # Visualize clustering results
+            Lecture.plot_heatmap(cluster_df, 'Label', "Cluster ID")
+            # Compute and print error
+            n_unique_clusterid = len(np.unique(cluster_df["Cluster ID"]))
+            n_unique_label = len(np.unique(cluster_df["Label"]))
+            Error = n_unique_clusterid - n_unique_label
+            print("Error", Error)
 
             # Compute and store homogeneity, completeness, V-measure, and error
             h, c, v = homogeneity_completeness_v_measure(cluster_df["Label"], cluster_df["Cluster ID"])
