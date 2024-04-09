@@ -10,7 +10,18 @@ This README provides instructions and results for HW3 of the Network Measurement
 1. Begin by executing the [Lecture.py](Lecture.py) script to determine the optimal value of N.
 2. The script utilizes data from the "lecture-dataset" directory.
 3. Upon running, the script generates a performance plot saved as [Lecture_dataset_Performance.png](result_figure/Lecture_dataset_Performance.png).
-4. The optimal value of N is determined to be 7.
+4. The result for different N are as following. We can see the optimal value of N is determined to be 7.
+
+* N=1, H=0.0, C=1.0, V=0.0, Error=-6
+* N=2, H=0.0, C=1.0, V=0.0, Error=-6
+* N=3, H=0.5021962586540387, C=1.0000000000000007, V=0.6686160423592115, Error=-4
+* N=4, H=0.4588688834606525, C=0.9916439637908914, V=0.6274119657987576, Error=-3
+* N=5, H=0.607679732390285, C=0.9873802840322383, V=0.7523365648822261, Error=-1
+* N=6, H=0.607679732390285, C=0.9873802840322383, V=0.7523365648822261, Error=-1
+* N=7, H=0.7954766125942974, C=0.891809370588526, V=0.8408930131185066, Error=1
+* N=8, H=0.8018508833757472, C=0.8383051731751866, V=0.8196729097382783, Error=5
+* N=9, H=1.0000000000000002, C=0.5009518338648059, V=0.6675122046720224, Error=29
+* N=10, H=0.9999999999999999, C=0.23727030435398055, V=0.38353834811846904, Error=692
 
 ## Task 2: Analyzing Challenge Dataset
 1. Execute the [Challenge.py](Challenge.py) script to perform the analysis on the challenge dataset.

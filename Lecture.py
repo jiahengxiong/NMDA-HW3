@@ -1,15 +1,24 @@
 import os
-from sklearn.preprocessing import LabelEncoder
-import pandas as pd
-from IPython.display import display
+
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
+import pandas as pd
+import seaborn as sns
+from IPython.display import display
 from sklearn.metrics import homogeneity_completeness_v_measure
+from sklearn.preprocessing import LabelEncoder
 
 
 def read_csv(base_dir):
-    """Reads CSV files from a directory and concatenates them into a single DataFrame."""
+    """
+    Reads CSV files from a directory and concatenates them into a single DataFrame.
+
+    Parameters:
+    - base_dir (str): The base directory containing CSV files.
+
+    Returns:
+    - pd.DataFrame: Combined DataFrame containing all CSV data.
+    """
     df_list = list()
 
     for root, dirs, files in os.walk(base_dir):
@@ -24,7 +33,15 @@ def read_csv(base_dir):
 
 
 def remove_NaN(df):
-    """Removes columns from DataFrame that have more than 60% NaN values."""
+    """
+    Removes columns from DataFrame that have more than 60% NaN values.
+
+    Parameters:
+    - df (pd.DataFrame): Input DataFrame.
+
+    Returns:
+    - pd.DataFrame: DataFrame with NaN columns removed.
+    """
     nan_sum = df.isna().sum()
 
     nan_percentage = (nan_sum / len(df)) * 100
@@ -44,23 +61,38 @@ def remove_NaN(df):
 
 
 def find_features_less_20(df):
-    """Identifies features with less than 20 unique values."""
+    """
+    Identifies features with less than 20 unique values.
+
+    Parameters:
+    - df (pd.DataFrame): Input DataFrame.
+
+    Returns:
+    - list: List of features with less than 20 unique values.
+    """
     unique_elem = df.nunique()
-
     print(unique_elem)
-
-    features = []
+    features_list = []
 
     for i in range(0, len(unique_elem) - 1):
         if unique_elem[i] < 20:
-            features.append(unique_elem.index[i])
+            features_list.append(unique_elem.index[i])
 
-    print(features)
-    return features
+    print(features_list)
+    return features_list
 
 
 def encoder(df, features):
-    """Encodes categorical features using LabelEncoder."""
+    """
+    Encodes categorical features using LabelEncoder.
+
+    Parameters:
+    - df (pd.DataFrame): Input DataFrame.
+    - features (list): List of features to be encoded.
+
+    Returns:
+    - pd.DataFrame: Encoded DataFrame.
+    """
     df_tmp = df.copy()
     for elem in features:
         if elem != 'Lenght' and elem != 'Channel' and elem != 'DS Channel':
@@ -72,7 +104,15 @@ def encoder(df, features):
 
 
 def plot_heatmap(df, column1, column2, colormap="Blues"):
-    """Plots a heatmap for two columns of a DataFrame."""
+    """
+    Plots a heatmap for two columns of a DataFrame.
+
+    Parameters:
+    - df (pd.DataFrame): Input DataFrame.
+    - column1 (str): Name of the first column.
+    - column2 (str): Name of the second column.
+    - colormap (str, optional): Colormap for the heatmap. Defaults to "Blues".
+    """
     crosstab = pd.crosstab(df[column1], df[column2])
 
     sns.set_theme(style="whitegrid", font_scale=1)
@@ -88,7 +128,16 @@ def plot_heatmap(df, column1, column2, colormap="Blues"):
 
 
 def num_same_feature(row_1, row_2):
-    """Calculates the number of common elements between two rows."""
+    """
+    Calculates the number of common elements between two rows.
+
+    Parameters:
+    - row_1 (pd.Series): First row.
+    - row_2 (pd.Series): Second row.
+
+    Returns:
+    - int: Number of common elements.
+    """
     num = 0
     for col_name, val_1 in row_1.items():
         val_2 = row_2[col_name]
@@ -158,7 +207,9 @@ if __name__ == "__main__":
         result['V'].append(v)
         result['ERROR'].append(n_unique_clusterid - n_unique_label)
 
-    print(result)
+    for n in range(1, 11):
+        print(
+            f"N={n}, H={result['H'][n - 1]}, C={result['C'][n - 1]}, V={result['V'][n - 1]}, ERROR={result['ERROR'][n - 1]}")
     H = result['H']
     C = result['C']
     V = result['V']
@@ -183,3 +234,45 @@ if __name__ == "__main__":
     plt.tight_layout()
     plt.savefig("result_figure\\Lecture_dataset_Performance.png")
     plt.show()
+
+"""We start by defining several functions to handle different aspects of the data processing, such as reading CSV 
+files, removing NaN values, identifying features with less than 20 unique values, encoding categorical features, 
+plotting heatmaps, and calculating the number of common elements between rows. In the main part of the code (if 
+__name__ == "__main__":), we read the CSV files, preprocess the data, and then perform clustering based on the online 
+clustering technique described in the task requirements. For each value of N from 1 to 10, we iterate through the 
+DataFrame and assign probes to existing clusters or create new clusters based on the similarity metric described in 
+the task. We calculate the homogeneity, completeness, V-measure, and error for each value of N. Finally, we plot the 
+performance metrics (homogeneity, completeness, V-measure) and error against the values of N, and save the resulting 
+plots as images.
+In the result figure of this script, we can see when N is 7, the performance is best.
+"""
+
+"""
+The results of Task 1 indicate the performance of the clustering approach with different threshold values (N) for feature similarity. Here's the analysis:
+
+1. Homogeneity (H): The homogeneity score measures the extent to which each cluster contains only data points 
+from a single class. For N=1 and N=2, the homogeneity scores are 0.0, indicating poor clustering, as no clusters are 
+homogeneous. However, as N increases, the homogeneity improves significantly, reaching a perfect score of 1.0 for N=9 
+and N=10. This indicates that clusters become more homogeneous as more features are required to match for assignment.
+
+2. Completeness (C): The completeness score measures the extent to which all data points of a given class are 
+assigned to the same cluster. Similar to homogeneity, completeness starts low for N=1 and N=2 and increases as N 
+increases. However, it decreases slightly for N=9 and N=10, indicating that all data points of a class are not fully 
+captured within a single cluster.
+
+3. V-Measure (V): The V-measure is the harmonic mean of homogeneity and completeness, providing a balanced 
+assessment of clustering quality. As with homogeneity and completeness, the V-measure improves as N increases, 
+peaking at N=9 and N=10. However, it is essential to note that a decrease in completeness at higher N values affects 
+the V-measure.
+
+4. Error: The error metric quantifies the discrepancy between the number of clusters and the number of true 
+classes. Negative error values indicate an overestimation of the number of clusters, while positive values indicate 
+an underestimation. For N=1 and N=2, the error is significantly negative, suggesting an excessive number of clusters. 
+As N increases, the error decreases and eventually becomes positive, indicating a better alignment between the number 
+of clusters and true classes. However, at N=10, the error spikes drastically, indicating severe underestimation of 
+the number of clusters, likely due to overly strict feature similarity criteria.
+
+In summary, the clustering performance improves as the threshold value N increases up to a certain point, 
+where clusters become more homogeneous and complete. However, setting N too high can lead to overfitting and an 
+insufficient number of clusters, impacting the clustering quality negatively. Therefore, the optimal value of N 
+should strike a balance between capturing meaningful patterns in the data and avoiding overfitting."""
