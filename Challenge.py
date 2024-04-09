@@ -108,7 +108,7 @@ if __name__ == '__main__':
     avg_C = []
     avg_V = []
     avg_Error = []
-    for k in range(3, 6):
+    for k in range(2, 7):
         avg_H.append(sum(result[k]['H']) / len(result[k]['H']))
         avg_C.append(sum(result[k]['C']) / len(result[k]['C']))
         avg_V.append(sum(result[k]['V']) / len(result[k]['V']))

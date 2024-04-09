@@ -1,7 +1,7 @@
 # Network Measurement Lab HW3 README
 
 ## Overview
-This README provides instructions and results for HW3 of the Network Measurement Lab at Politecnico di Milano (POLIMI). The objective of this assignment is to analyze data from lecture and challenge datasets using Python scripts.
+This README provides instructions and results for HW3 of the Network Measurement Lab at Politecnico di Milano (POLIMI). The objective of this assignment is to analyze data from lecture and challenge datasets using cluster method.
 
 ## Dataset
 - All CSV files required for the assignment are located in the "dataset" folder.
